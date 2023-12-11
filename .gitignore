@@ -30,3 +30,7 @@
 
 # mysql
 docker/data
+
+# idea
+.idea
+backend.iml
