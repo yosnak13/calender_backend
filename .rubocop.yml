@@ -22,3 +22,8 @@ Metrics/PerceivedComplexity:
 Layout/LineLength:
   Exclude:
     - 'bin/bundle'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+

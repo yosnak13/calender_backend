@@ -12,11 +12,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_231_211_094_348) do
+ActiveRecord::Schema[7.0].define(version: 20_231_213_084_821) do
   create_table 'events', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name', limit: 100, null: false
     t.datetime 'start', null: false
-    t.datetime 'end', null: false
+    t.datetime 'finish', null: false
     t.boolean 'timed', default: true
     t.text 'description'
     t.string 'color'
