@@ -1,0 +1,24 @@
+# .rubocop.yml
+
+# Style/Documentation チェックを無効
+Style/Documentation:
+  Enabled: false
+
+# サイクロマティック複雑度の警告を無効
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'bin/bundle'
+
+# 行数過多を無効
+Metrics/MethodLength:
+  Exclude:
+    - 'bin/bundle'
+
+# 複雑度の無視
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'bin/bundle'
+
+Layout/LineLength:
+  Exclude:
+    - 'bin/bundle'
