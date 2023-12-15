@@ -18,6 +18,21 @@ class EventsController < ApplicationController
     end
   end
 
+  def update
+    event = Event.find(params[:id])
+    if event.update(event_params)
+      render json: event
+    else
+      render json: event.errors, status: 422
+    end
+  end
+
+  def destroy
+    event = Event.find(params[:id])
+    event.destroy!
+    render json: event
+  end
+
   private
 
   def event_params

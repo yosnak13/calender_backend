@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+UPDATED_NAME = 'update'
+
 RSpec.describe 'EventsControllers', type: :request do
   describe 'GET #index' do
     let(:event) { FactoryBot.create(:event) }
@@ -47,7 +49,7 @@ RSpec.describe 'EventsControllers', type: :request do
     let(:event_hash) { FactoryBot.attributes_for(:event) }
 
     context '成功' do
-      it 'リクエストが返却され、ステータスが200であること' do
+      it 'リクエストしたインスタンスのJSONが返却され、ステータスが200であること' do
         post '/events', params: { event: event_hash }
         expect(response.status).to eq(200)
 
@@ -70,13 +72,57 @@ RSpec.describe 'EventsControllers', type: :request do
 
     context '失敗' do
       it 'エラーメッセージが返却され、ステータスが422になること' do
-        event = instance_double('Event', save: false, errors: { name: ['Name cannot be blank'] })
+        event = instance_double('Event', save: false, errors: { error: ['Name cannot be blank'] })
         allow(Event).to receive(:new).and_return(event)
 
         post '/events', params: { event: event_hash }
         expect(response.status).to eq(422)
         expect(response.body).to include('Name cannot be blank')
       end
+    end
+  end
+
+  describe 'PUT #update' do
+    let(:event) { FactoryBot.create(:event) }
+
+    context '成功' do
+      it 'リクエストしたインスタンスのJSONが返却され、ステータスが200であること' do
+        put "/events/#{event.id}", params: { event: { id: event.id, name: UPDATED_NAME } }
+        expect(response.status).to eq(200)
+
+        res = JSON.parse(response.body)
+        expect(res['id']).to eq(event[:id])
+        expect(res['name']).to eq('update')
+        expect(res['timed']).to eq(event[:timed])
+        expect(res['description']).to eq(event[:description])
+        expect(res['color']).to eq(event[:color])
+
+        expected_start = event[:start].in_time_zone(Time.zone).strftime('%Y-%m-%d %H:%M:%S')
+        actual_start = res['start'].to_time.strftime('%Y-%m-%d %H:%M:%S')
+        expect(actual_start).to eq(expected_start)
+
+        expected_finish = event[:finish].in_time_zone(Time.zone).strftime('%Y-%m-%d %H:%M:%S')
+        actual_finish = res['finish'].to_time.strftime('%Y-%m-%d %H:%M:%S')
+        expect(actual_finish).to eq(expected_finish)
+      end
+    end
+
+    context '失敗' do
+      it 'リクエストに失敗し、ステータスが422であること' do
+        allow_any_instance_of(Event).to receive(:update).and_return(false)
+
+        put "/events/#{event.id}", params: { event: { id: event.id, name: UPDATED_NAME } }
+        expect(response.status).to eq(422)
+      end
+    end
+  end
+
+  describe 'DELETE #delete' do
+    let(:event) { FactoryBot.create(:event) }
+
+    it '削除できること' do
+      delete "/events/#{event.id}"
+      expect(response.status).to eq(200)
     end
   end
 end
